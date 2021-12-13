@@ -1,0 +1,17 @@
+{
+  "name": "mcdm-ahp",
+  "version": "1.0.0",
+  "description": "mcdm method, ahp, javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcdm",
+    "ahp",
+    "javascript"
+  ],
+  "type": "module",
+  "author": "Nikita Shevkunov <shevkunovnikita97@gmail.com>",
+  "license": "ISC"
+}
