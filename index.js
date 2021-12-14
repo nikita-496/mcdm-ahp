@@ -1,4 +1,5 @@
-import { processInput } from "./processingErrors.js";
+import { processInput, proccesQuantitativeData } from "./processingErrors.js";
+import { createObj, setDate } from "./utilits.js";
 
 /*Функция принимает в качеcтве параметров, выражения, значения которых имеют тип массива*/
 function decide(criteria, alternatives) {
@@ -11,7 +12,7 @@ function decide(criteria, alternatives) {
       processInput(inxErrorAray, getNameInput().split(", "));
     }
   }
-
+  let sourceDataForMatrix = setQuantitativeData(criteria, alternatives);
   return "работает";
 }
 
@@ -22,6 +23,13 @@ function getNameInput() {
   }
 }
 
+function setQuantitativeData(c, a) {
+  let alternatives = createObj(a);
+  let alternativesData = setDate(c, alternatives);
+  return proccesQuantitativeData(alternativesData);
+}
+
+/*******************************************************************************************************/
 let criteria = [
   "Грузооборот",
   "Площадь складов",
