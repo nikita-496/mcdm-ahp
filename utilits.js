@@ -1,57 +1,55 @@
+import { createObj, readSource } from "./schemes.js";
 export function getNan(arr) {
-  let nanHash = {};
-  let i = 0;
-  for (let item of arr) {
-    if (isNaN(item)) {
-      nanHash[i] = [i];
+  let nanArr = searchNan(arr);
+  function searchNan(searchSource) {
+    let foundNan = [];
+    for (let item of searchSource) {
+      let values = Object.values(item);
+      let nan = values.filter((value) => isNaN(value));
+      nan.length ? foundNan.push(nan.join()) : foundNan;
     }
-    i++;
+    return foundNan;
   }
-
-  if (!Object.keys[nanHash]) {
-    let nanArr = [];
-    let nanInxArr = Object.keys(nanHash);
-    for (let item in nanInxArr) {
-      nanArr.push(arr[nanInxArr[item]]);
-    }
-    return nanArr;
-  }
-  return false;
-}
-export function setIndicators(criteria, alternatives) {
-  let hash = {};
-  /*let limit = alternatives.length;*/
-  for (let item in createObj(criteria)) {
-    hash[item] = ["123", "55454", "654.4", "333"];
-  }
-  return hash;
+  return nanArr.length ? nanArr : false;
 }
 
-/*Create Function*/
-export function createObj(arr) {
-  let hash = {};
-  for (let item of arr) hash[item] = null;
-  return hash;
+export async function setValues(criteria, alternatives) {
+  /*В будующем оптимизировать данный алгоритм. Заменить вложенный цикл*/
+  for (let alternative in alternatives) {
+    let hash = {};
+    for (let item in createObj(criteria)) {
+      hash[item] = await get(item, alternative);
+    }
+    alternatives[alternative] = hash;
+    alternatives;
+  }
+  return alternatives;
 }
+
+async function get(с, a) {
+  return await readSource(`Введите числовое значение критерия ${с} для альтерантивы ${a}: `);
+}
+
 /* TDA - TwoDimensionalArray */
 export function createTDA(source) {
+  //форматтирует наименование критериев и альтернатив в цифры(для упращения, т.к наименования могут быть длинными),
+  //соответсвующие индексу
+  let inxFormatSource = source.map((name) => source.indexOf(name));
+
   let twoDimensionalArr = [];
-  for (let i = 0; i < source.length + 1; i++) {
+  for (let i = 0; i < inxFormatSource.length; i++) {
     let rowMatrix = [];
-    if (i === 0) {
-      rowMatrix.push("/");
-      Array.from(source, function (x) {
-        rowMatrix.push(x);
-      });
-    } else {
-      rowMatrix.push(source[i - 1]);
-      source.forEach((item) => rowMatrix.push(" "));
-    }
+    rowMatrix.push(inxFormatSource[i]);
+    inxFormatSource.forEach((item) => {
+      if (item === i) {
+        return rowMatrix.push("1");
+      }
+      return rowMatrix.push(" ");
+    });
     twoDimensionalArr.push(rowMatrix);
   }
   return twoDimensionalArr;
 }
-/*Create Function*/
 
 /* For Convert */
 export function formObjToArray(obj) {

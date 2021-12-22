@@ -1,24 +1,32 @@
-import { proccesIndicators } from "./processingErrors.js";
-import { createObj, setIndicators, fromStrToArr, createTDA } from "./utilits.js";
+import { proccesValues } from "./processingErrors.js";
+import { setValues, fromStrToArr, createTDA } from "./utilits.js";
+import { read, createObj, toConductExamination } from "./schemes.js";
 
-function decide(criteriaStr, alternativesStr) {
-  let criterionIndicators = getIndicators(fromStrToArr(criteriaStr), fromStrToArr(alternativesStr));
-  let CriteriaPCM = buildPCM(fromStrToArr(criteriaStr)); //PCM - pairwiseComparisonMatrix*/
-  return "работает";
-}
+async function decide(c, a) {
+  //c - criteria
+  //a - alternatives
+  let criteriaArr = fromStrToArr(c);
+  //устанавливаются количественные данные (показатели) критериев
+  //для каждой из альтернатив
+  let quantitativeValues = await getValues(criteriaArr, fromStrToArr(a));
+  //PCM - pairwiseComparisonMatrix (Матрица попарных сравнений)
+  let criteriaPCM = buildPCM(criteriaArr);
+  let evaluations = toConductExamination();
 
-function getIndicators(criteria, alternatives) {
-  let altObj = createObj(alternatives);
-  let indeicators = setIndicators(criteria, altObj);
-  return proccesIndicators(indeicators);
-}
+  async function getValues(c, a) {
+    let objOfA = createObj(a);
+    let values = await setValues(c, objOfA);
+    return proccesValues(values);
+  }
 
-function buildPCM(compared) {
-  console.log(createTDA(compared));
+  function buildPCM(compared) {
+    return createTDA(compared);
+  }
 }
 /*******************************************************************************************************/
-
-let criteria =
-  "Грузоборот, Площадь складов, Пропускная способность, Портовая инфраструктра, Трансопртный потеницал региона, Валовый региональный продукт на душу населения, Доля населения с доходом ниже прожиточного минимума, Месторождение полезных ископаемых";
-let alternatives = "Архангельск, Варандей, Дудинка, Мурманск";
-console.log(decide(criteria, alternatives));
+/*Ввод исходных данных для программы принятия решения с клавиатуры*/
+(async function () {
+  let setCriteria = () => read("Введите критерии оценки: ");
+  let setAlternative = () => read("Введите альтернативы: ");
+  decide(await setCriteria(), await setAlternative());
+})();
